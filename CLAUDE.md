@@ -1,6 +1,13 @@
 # WireMock JP - 開発ガイド
 
-WireMock用の日本語GUIクライアント（Vue 3 + Element Plus + Fastify Backend）
+分散WireMock環境の一元管理に対応した、WireMock用日本語GUIクライアント。
+
+## 主な機能
+
+- **分散WireMock対応**: 複数のWireMockインスタンスにスタブを一括同期
+- **データ永続化**: PostgreSQLに保存するためWireMock再起動後もデータが残る
+- **チーム共有**: 同じDBを参照すれば全員が同じスタブを利用可能
+- **日本語/英語UI**: Element Plusによる多言語対応インターフェース
 
 ## クイックスタート
 
@@ -57,8 +64,33 @@ pnpm run dev
 ### 5. 初回利用
 
 1. http://localhost:5173 にアクセス
-2. プロジェクトを作成（WireMock URLを設定）
-3. スタブを作成・編集
+2. プロジェクトを作成（WireMock URL = ロードバランサーURL）
+3. WireMockインスタンスを追加（個別サーバーURL）
+4. スタブを作成
+5. 全インスタンスに同期
+
+## アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        WireMock JP                              │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐      │
+│  │   Frontend   │ -> │   Backend    │ -> │  PostgreSQL  │      │
+│  │   (Vue 3)    │    │  (Fastify)   │    │   (永続化)    │      │
+│  └──────────────┘    └──────────────┘    └──────────────┘      │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              │ Admin API経由で同期
+                              ▼
+         ┌────────────────────┼────────────────────┐
+         │                    │                    │
+         ▼                    ▼                    ▼
+   ┌──────────┐         ┌──────────┐         ┌──────────┐
+   │ WireMock │         │ WireMock │         │ WireMock │
+   │ Instance │         │ Instance │         │ Instance │
+   │    #1    │         │    #2    │         │    #3    │
+   └──────────┘         └──────────┘         └──────────┘
+```
 
 ## プロジェクト構成
 
@@ -163,16 +195,13 @@ packages/
 - `GET /api/wiremock-instances?projectId=` - インスタンス一覧
 - `POST /api/wiremock-instances` - インスタンス登録
 - `GET /api/wiremock-instances/:id` - インスタンス詳細（ヘルスチェック含む）
+- `PUT /api/wiremock-instances/:id` - インスタンス更新
+- `DELETE /api/wiremock-instances/:id` - インスタンス削除
 - `GET /api/wiremock-instances/:id/mappings` - マッピング取得
 - `GET /api/wiremock-instances/:id/requests` - リクエストログ取得
 - `POST /api/wiremock-instances/:id/reset` - インスタンスリセット
 
 ## WireMock連携
-
-開発時はViteのプロキシ経由でWireMockに接続：
-- フロントエンド: http://localhost:5173
-- WireMock: http://localhost:8080（デフォルト）
-- プロキシ設定: `/__admin` → WireMock Admin API
 
 ### WireMockサーバー起動
 
@@ -184,9 +213,17 @@ docker run -it --rm -p 8080:8080 wiremock/wiremock
 java -jar wiremock-standalone.jar --port 8080
 ```
 
-WireMockが起動していないとNetwork Errorになります。
+### プロジェクト vs インスタンス
+
+| 項目 | 用途 | 例 |
+|------|------|-----|
+| **プロジェクト WireMock URL** | クライアントがアクセスするロードバランサーURL | `http://api-mock.example.com` |
+| **インスタンスURL** | 個別サーバーの管理API用URL | `http://wiremock-1:8080` |
+
+単一サーバー構成の場合は、両方同じURLで問題ありません。
 
 ## 注意事項
 
 - Node.js 20.19.0以上または22.12.0以上が必要
 - 認証なし：全員が全データにアクセス可能
+- スタブはPostgreSQLに保存され、Admin API経由でWireMockに同期される
