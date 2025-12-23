@@ -1,38 +1,99 @@
-# wiremock-jp
+# WireMock JP
 
-This template should help get you started developing with Vue 3 in Vite.
+A Japanese GUI client for WireMock with centralized management support for distributed WireMock environments.
 
-## Recommended IDE Setup
+## Features
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+### Distributed WireMock Support
+- **Bulk sync to multiple instances**: Deploy stubs to all WireMock instances with a single click
+- **Health check**: Monitor connection status of each instance in real-time
+- **Project-based management**: Organize stubs by environment (dev/staging/production)
 
-## Recommended Browser Setup
+### Data Persistence
+- **PostgreSQL stub storage**: Data persists even after WireMock restarts
+- **Team sharing**: Share the same stubs across your team via shared database
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+### Ease of Use
+- **Japanese UI**: Switch between Japanese and English
+- **Intuitive interface**: Modern UI powered by Element Plus
+- **No authentication required**: Simple setup for team-wide access
 
-## Customize configuration
+## Architecture
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        WireMock JP                              │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐      │
+│  │   Frontend   │ -> │   Backend    │ -> │  PostgreSQL  │      │
+│  │   (Vue 3)    │    │  (Fastify)   │    │ (Persistence)│      │
+│  └──────────────┘    └──────────────┘    └──────────────┘      │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              │ Sync
+                              ▼
+         ┌────────────────────┼────────────────────┐
+         │                    │                    │
+         ▼                    ▼                    ▼
+   ┌──────────┐         ┌──────────┐         ┌──────────┐
+   │ WireMock │         │ WireMock │         │ WireMock │
+   │ Instance │         │ Instance │         │ Instance │
+   │    #1    │         │    #2    │         │    #3    │
+   └──────────┘         └──────────┘         └──────────┘
 ```
 
-### Compile and Hot-Reload for Development
+## Tech Stack
 
-```sh
-npm run dev
+| Layer | Technology |
+|-------|------------|
+| Frontend | Vue 3 + TypeScript + Element Plus |
+| Backend | Node.js + Fastify + Prisma |
+| Database | PostgreSQL |
+| Build | Vite + pnpm workspace |
+
+## Setup
+
+### Prerequisites
+- Node.js 20.19+ or 22.12+
+- PostgreSQL
+- pnpm
+
+### Installation
+
+```bash
+# Install dependencies
+pnpm install
+
+# Generate Prisma client
+pnpm run db:generate
+
+# Start development server
+pnpm run dev
 ```
 
-### Compile and Minify for Production
+### Environment Variables
 
-```sh
-npm run build
+```bash
+# packages/backend/.env
+DATABASE_URL="postgresql://user:password@localhost:5432/wiremock_jp"
 ```
+
+## Usage
+
+### 1. Create a Project
+A project represents an environment (dev/staging/etc.).
+Set the load balancer URL as the WireMock URL.
+
+### 2. Add Instances
+Register each WireMock server URL.
+Use health check to verify connection status.
+
+### 3. Create Stubs
+Create stub mappings in the Stub Mappings screen.
+Stubs are saved to PostgreSQL.
+
+### 4. Sync
+Click "Sync All Instances" to deploy stubs to all WireMock instances at once.
+
+## License
+
+MIT
