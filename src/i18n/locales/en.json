@@ -114,6 +114,9 @@
     "clear": "Clear",
     "copy": "Copy",
     "copied": "Copied",
-    "selected": "Selected"
+    "selected": "Selected",
+    "refresh": "Refresh",
+    "actions": "Actions",
+    "confirmDelete": "Are you sure you want to delete?"
   }
 }

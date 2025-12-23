@@ -114,6 +114,9 @@
     "clear": "クリア",
     "copy": "コピー",
     "copied": "コピーしました",
-    "selected": "選択中"
+    "selected": "選択中",
+    "refresh": "更新",
+    "actions": "操作",
+    "confirmDelete": "削除しますか？"
   }
 }
