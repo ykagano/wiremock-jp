@@ -3,6 +3,28 @@
     "title": "WireMock JP",
     "subtitle": "WireMock 日本語UI"
   },
+  "auth": {
+    "login": "ログイン",
+    "register": "新規登録",
+    "logout": "ログアウト",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "confirmPassword": "パスワード確認",
+    "name": "ユーザー名",
+    "emailPlaceholder": "example@example.com",
+    "passwordPlaceholder": "8文字以上",
+    "confirmPasswordPlaceholder": "パスワードを再入力",
+    "namePlaceholder": "ユーザー名を入力",
+    "emailRequired": "メールアドレスを入力してください",
+    "emailInvalid": "有効なメールアドレスを入力してください",
+    "passwordRequired": "パスワードを入力してください",
+    "passwordMinLength": "パスワードは8文字以上で入力してください",
+    "confirmPasswordRequired": "パスワード確認を入力してください",
+    "passwordMismatch": "パスワードが一致しません",
+    "nameRequired": "ユーザー名を入力してください",
+    "hasAccount": "アカウントをお持ちですか？",
+    "noAccount": "アカウントをお持ちでないですか？"
+  },
   "nav": {
     "projects": "プロジェクト",
     "mappings": "スタブマッピング",

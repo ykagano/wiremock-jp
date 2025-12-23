@@ -96,10 +96,6 @@ function handleLocaleChange() {
   locale.value = currentLocale.value
   saveLocale(currentLocale.value)
 }
-
-// 初期化
-projectStore.loadProjects()
-projectStore.loadCurrentProject()
 </script>
 
 <style>
@@ -133,6 +129,12 @@ projectStore.loadCurrentProject()
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .app-header h1 {

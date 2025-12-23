@@ -11,7 +11,8 @@ import i18n from './i18n'
 const app = createApp(App)
 
 // Pinia
-app.use(createPinia())
+const pinia = createPinia()
+app.use(pinia)
 
 // Vue Router
 app.use(router)

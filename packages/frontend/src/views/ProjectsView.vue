@@ -113,19 +113,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '@/stores/project'
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
-import type { Project } from '@/types/wiremock'
+import type { Project } from '@/services/api'
 import dayjs from 'dayjs'
 
 const { t } = useI18n()
 const router = useRouter()
 const projectStore = useProjectStore()
-const { projects, currentProjectId } = storeToRefs(projectStore)
+const { projects, currentProjectId, loading } = storeToRefs(projectStore)
 
 const showAddDialog = ref(false)
 const editingProject = ref<Project | null>(null)
@@ -150,13 +150,18 @@ const formRules = computed<FormRules>(() => ({
   ]
 }))
 
+// 初期化時にプロジェクト一覧を取得
+onMounted(async () => {
+  await projectStore.fetchProjects()
+  projectStore.loadCurrentProject()
+})
+
 function formatDate(dateString: string) {
   return dayjs(dateString).format('YYYY/MM/DD HH:mm')
 }
 
-function selectProject(id: string) {
-  projectStore.setCurrentProject(id)
-  ElMessage.success(t('common.success'))
+async function selectProject(id: string) {
+  await projectStore.setCurrentProject(id)
   router.push('/mappings')
 }
 
@@ -176,9 +181,8 @@ function confirmDelete(project: Project) {
       cancelButtonText: t('common.no'),
       type: 'warning'
     }
-  ).then(() => {
-    projectStore.deleteProject(project.id)
-    ElMessage.success(t('common.success'))
+  ).then(async () => {
+    await projectStore.deleteProject(project.id)
   }).catch(() => {
     // キャンセル
   })
@@ -187,18 +191,17 @@ function confirmDelete(project: Project) {
 async function saveProject() {
   if (!formRef.value) return
 
-  await formRef.value.validate((valid) => {
-    if (valid) {
-      if (editingProject.value) {
-        projectStore.updateProject(editingProject.value.id, formData)
-        ElMessage.success(t('common.success'))
-      } else {
-        projectStore.addProject(formData)
-        ElMessage.success(t('common.success'))
-      }
-      closeDialog()
+  try {
+    await formRef.value.validate()
+    if (editingProject.value) {
+      await projectStore.updateProject(editingProject.value.id, formData)
+    } else {
+      await projectStore.addProject(formData)
     }
-  })
+    closeDialog()
+  } catch {
+    // バリデーションエラー
+  }
 }
 
 function closeDialog() {
