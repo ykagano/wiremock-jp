@@ -31,7 +31,8 @@
     "dialog": {
       "addTitle": "Add Project",
       "editTitle": "Edit Project"
-    }
+    },
+    "confirmDelete": "Delete {name}?"
   },
   "mappings": {
     "title": "Stub Mappings",
@@ -112,6 +113,7 @@
     "search": "Search",
     "clear": "Clear",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "selected": "Selected"
   }
 }

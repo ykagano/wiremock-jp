@@ -31,7 +31,8 @@
     "dialog": {
       "addTitle": "プロジェクト追加",
       "editTitle": "プロジェクト編集"
-    }
+    },
+    "confirmDelete": "{name} を削除しますか？"
   },
   "mappings": {
     "title": "スタブマッピング",
@@ -112,6 +113,7 @@
     "search": "検索",
     "clear": "クリア",
     "copy": "コピー",
-    "copied": "コピーしました"
+    "copied": "コピーしました",
+    "selected": "選択中"
   }
 }
