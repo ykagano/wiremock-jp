@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useProjectStore } from '@/stores/project'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,12 +16,26 @@ const router = createRouter({
     {
       path: '/mappings',
       name: 'mappings',
-      component: () => import('@/views/MappingsView.vue')
+      component: () => import('@/views/MappingsView.vue'),
+      meta: { requiresProject: true }
+    },
+    {
+      path: '/mappings/new',
+      name: 'mapping-new',
+      component: () => import('@/views/MappingEditorView.vue'),
+      meta: { requiresProject: true }
+    },
+    {
+      path: '/mappings/:id',
+      name: 'mapping-edit',
+      component: () => import('@/views/MappingEditorView.vue'),
+      meta: { requiresProject: true }
     },
     {
       path: '/requests',
       name: 'requests',
-      component: () => import('@/views/RequestsView.vue')
+      component: () => import('@/views/RequestsView.vue'),
+      meta: { requiresProject: true }
     },
     {
       path: '/settings',
@@ -28,6 +43,18 @@ const router = createRouter({
       component: () => import('@/views/SettingsView.vue')
     }
   ]
+})
+
+// ナビゲーションガード
+router.beforeEach((to, _from, next) => {
+  if (to.meta.requiresProject) {
+    const projectStore = useProjectStore()
+    if (!projectStore.currentProject) {
+      next('/projects')
+      return
+    }
+  }
+  next()
 })
 
 export default router
