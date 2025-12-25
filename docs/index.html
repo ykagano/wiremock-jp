@@ -143,6 +143,29 @@
       background: rgba(255, 255, 255, 0.1);
     }
 
+    /* Screenshot */
+    .screenshot {
+      background: var(--bg);
+      padding: 40px 0 80px;
+      text-align: center;
+    }
+
+    .screenshot-figure {
+      margin: 0;
+    }
+
+    .screenshot-img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+
+    .screenshot-caption {
+      margin-top: 16px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
     /* Features */
     .features {
       padding: 80px 0;
@@ -340,6 +363,15 @@
     </div>
   </section>
 
+  <section class="screenshot">
+    <div class="container">
+      <figure class="screenshot-figure">
+        <img src="images/wiremock-jp.png" alt="WireMock JP スクリーンショット" class="screenshot-img">
+        <figcaption class="screenshot-caption" data-i18n="screenshot.caption">プロジェクト一覧画面 - 複数のWireMock環境をプロジェクトとして管理</figcaption>
+      </figure>
+    </div>
+  </section>
+
   <section id="features" class="features">
     <div class="container">
       <h2 class="section-title" data-i18n="nav.features">Features</h2>
@@ -513,7 +545,8 @@
         'comparison.japanese': '日本語UI',
         'comparison.opensource': 'オープンソース',
         'comparison.selfhost': 'セルフホスト',
-        'comparison.nodb': '外部DB不要'
+        'comparison.nodb': '外部DB不要',
+        'screenshot.caption': 'プロジェクト一覧画面 - 複数のWireMock環境をプロジェクトとして管理'
       },
       en: {
         'nav.features': 'Features',
@@ -540,7 +573,8 @@
         'comparison.japanese': 'Japanese UI',
         'comparison.opensource': 'Open Source',
         'comparison.selfhost': 'Self-hosted',
-        'comparison.nodb': 'No External DB Required'
+        'comparison.nodb': 'No External DB Required',
+        'screenshot.caption': 'Projects List - Manage multiple WireMock environments as projects'
       }
     };
 
