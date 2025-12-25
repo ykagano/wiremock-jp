@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WireMock JP - 分散WireMock管理GUI</title>
+  <meta name="description" content="複数のWireMockインスタンスを一元管理できる日本語対応GUIクライアント">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #409eff;
+      --primary-dark: #337ecc;
+      --text: #303133;
+      --text-secondary: #606266;
+      --bg: #f5f7fa;
+      --white: #ffffff;
+      --border: #dcdfe6;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: var(--bg);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .lang-switch {
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .lang-switch:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 20px;
+      opacity: 0.9;
+      margin-bottom: 32px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--white);
+      color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+      border: 2px solid var(--white);
+      margin-left: 16px;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Features */
+    .features {
+      padding: 80px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 48px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .feature-card h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+    }
+
+    /* Architecture */
+    .architecture {
+      background: var(--white);
+      padding: 80px 0;
+    }
+
+    .arch-diagram {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 32px;
+      border-radius: 12px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* Quick Start */
+    .quickstart {
+      padding: 80px 0;
+    }
+
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 24px;
+      border-radius: 12px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 14px;
+      overflow-x: auto;
+      margin-top: 24px;
+    }
+
+    .code-block .comment {
+      color: #6a9955;
+    }
+
+    .code-block .command {
+      color: #dcdcaa;
+    }
+
+    /* Comparison */
+    .comparison {
+      background: var(--white);
+      padding: 80px 0;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 32px;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comparison-table th {
+      background: var(--bg);
+      font-weight: 500;
+    }
+
+    .check {
+      color: #67c23a;
+      font-size: 20px;
+    }
+
+    .cross {
+      color: #f56c6c;
+      font-size: 20px;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--text);
+      color: var(--white);
+      padding: 48px 0;
+      text-align: center;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-links {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .footer-links a:hover {
+      color: var(--white);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .btn-secondary {
+        display: block;
+        margin: 16px auto 0;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-content">
+      <a href="#" class="logo">WireMock JP</a>
+      <nav class="nav-links">
+        <a href="#features" data-i18n="nav.features">Features</a>
+        <a href="#architecture" data-i18n="nav.architecture">Architecture</a>
+        <a href="#quickstart" data-i18n="nav.quickstart">Quick Start</a>
+        <a href="https://github.com/ykagano/wiremock-jp">GitHub</a>
+        <button class="lang-switch" onclick="toggleLanguage()">English</button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>WireMock JP</h1>
+      <p data-i18n="hero.description">複数のWireMockインスタンスを一元管理できる<br>日本語対応GUIクライアント</p>
+      <a href="https://github.com/ykagano/wiremock-jp" class="btn btn-primary" data-i18n="hero.github">GitHub で見る</a>
+      <a href="#quickstart" class="btn btn-secondary" data-i18n="nav.quickstart">Quick Start</a>
+    </div>
+  </section>
+
+  <section id="features" class="features">
+    <div class="container">
+      <h2 class="section-title" data-i18n="nav.features">Features</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#127760;</div>
+          <h3 data-i18n="features.distributed.title">分散WireMock管理</h3>
+          <p data-i18n="features.distributed.desc">複数のWireMockインスタンスにスタブを一括デプロイ。ワンクリックで全インスタンスを同期できます。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128200;</div>
+          <h3 data-i18n="features.loadtest.title">負荷試験に最適化</h3>
+          <p data-i18n="features.loadtest.desc">複数のWireMockインスタンスを並列稼働させ、大規模な負荷試験環境を簡単に構築。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128191;</div>
+          <h3 data-i18n="features.sqlite.title">SQLite永続化</h3>
+          <p data-i18n="features.sqlite.desc">外部データベース不要。シンプルなファイルベースの永続化でバックアップも簡単。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128483;</div>
+          <h3 data-i18n="features.i18n.title">日本語UI</h3>
+          <p data-i18n="features.i18n.desc">日本語・英語の切り替えに対応。シンプルで直感的なインターフェースでスタブを簡単に作成・管理。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128051;</div>
+          <h3 data-i18n="features.docker.title">Dockerサポート</h3>
+          <p data-i18n="features.docker.desc">Dockerイメージとして配布。docker compose up で簡単に起動できます。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128218;</div>
+          <h3 data-i18n="features.project.title">プロジェクト管理</h3>
+          <p data-i18n="features.project.desc">開発・ステージング・本番など、環境ごとにスタブをプロジェクトとして管理。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture" class="architecture">
+    <div class="container">
+      <h2 class="section-title" data-i18n="nav.architecture">Architecture</h2>
+      <div class="arch-diagram">┌─────────────────────────────────────────────────────────────────┐
+│                        WireMock JP                              │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐      │
+│  │   Frontend   │ -> │   Backend    │ -> │    SQLite    │      │
+│  │   (Vue 3)    │    │  (Fastify)   │    │ (Persistence)│      │
+│  └──────────────┘    └──────────────┘    └──────────────┘      │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              │ Sync
+                              ▼
+         ┌────────────────────┼────────────────────┐
+         │                    │                    │
+         ▼                    ▼                    ▼
+   ┌──────────┐         ┌──────────┐         ┌──────────┐
+   │ WireMock │         │ WireMock │         │ WireMock │
+   │ Instance │         │ Instance │         │ Instance │
+   │    #1    │         │    #2    │         │    #3    │
+   └──────────┘         └──────────┘         └──────────┘</div>
+    </div>
+  </section>
+
+  <section id="quickstart" class="quickstart">
+    <div class="container">
+      <h2 class="section-title" data-i18n="nav.quickstart">Quick Start</h2>
+      <div class="code-block">
+<span class="comment"># WireMock JP を起動</span><br>
+<span class="command">docker compose up -d</span><br>
+<br>
+<span class="comment"># デモ用WireMockインスタンス付きで起動</span><br>
+<span class="command">docker compose -f docker-compose.yml -f docker-compose.demo.yml up -d</span><br>
+<br>
+<span class="comment"># ブラウザでアクセス</span><br>
+<span class="command">open http://localhost:3000</span><br>
+<br>
+<span class="comment"># デモ用インスタンスのURL（プロジェクト作成後に登録）</span><br>
+<span class="command">http://localhost:8081</span><br>
+<span class="command">http://localhost:8082</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="comparison">
+    <div class="container">
+      <h2 class="section-title" data-i18n="comparison.title">ツール比較</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th data-i18n="comparison.feature">機能</th>
+            <th>WireMock JP</th>
+            <th>WireMock</th>
+            <th>WireMock Cloud</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-i18n="comparison.gui">GUI</td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td data-i18n="comparison.distributed">分散インスタンス一括同期</td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td data-i18n="comparison.japanese">日本語UI</td>
+            <td><span class="check">&#10003;</span></td>
+            <td>-</td>
+            <td><span class="cross">&#10005;</span></td>
+          </tr>
+          <tr>
+            <td data-i18n="comparison.opensource">オープンソース</td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+          </tr>
+          <tr>
+            <td data-i18n="comparison.selfhost">セルフホスト</td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+          </tr>
+          <tr>
+            <td data-i18n="comparison.nodb">外部DB不要</td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="check">&#10003;</span></td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>WireMock JP - MIT License</p>
+      <div class="footer-links">
+        <a href="https://github.com/ykagano/wiremock-jp">GitHub</a>
+        <a href="https://github.com/ykagano/wiremock-jp/issues">Issues</a>
+        <a href="https://github.com/ykagano/wiremock-jp/blob/main/README.md">Documentation</a>
+      </div>
+    </div>
+  </footer>
+  <script>
+    const translations = {
+      ja: {
+        'nav.features': '機能',
+        'nav.architecture': 'アーキテクチャ',
+        'nav.quickstart': 'クイックスタート',
+        'hero.description': '複数のWireMockインスタンスを一元管理できる<br>日本語対応GUIクライアント',
+        'hero.github': 'GitHub で見る',
+        'features.distributed.title': '分散WireMock管理',
+        'features.distributed.desc': '複数のWireMockインスタンスにスタブを一括デプロイ。ワンクリックで全インスタンスを同期できます。',
+        'features.sqlite.title': 'SQLite永続化',
+        'features.sqlite.desc': '外部データベース不要。シンプルなファイルベースの永続化でバックアップも簡単。',
+        'features.i18n.title': '日本語UI',
+        'features.i18n.desc': '日本語・英語の切り替えに対応。シンプルで直感的なインターフェースでスタブを簡単に作成・管理。',
+        'features.docker.title': 'Dockerサポート',
+        'features.docker.desc': 'Dockerイメージとして配布。docker compose up で簡単に起動できます。',
+        'features.loadtest.title': '負荷試験に最適化',
+        'features.loadtest.desc': '複数のWireMockインスタンスを並列稼働させ、大規模な負荷試験環境を簡単に構築。',
+        'features.project.title': 'プロジェクト管理',
+        'features.project.desc': '開発・ステージング・本番など、環境ごとにスタブをプロジェクトとして管理。',
+        'comparison.title': 'ツール比較',
+        'comparison.feature': '機能',
+        'comparison.gui': 'GUI',
+        'comparison.distributed': '分散インスタンス一括同期',
+        'comparison.japanese': '日本語UI',
+        'comparison.opensource': 'オープンソース',
+        'comparison.selfhost': 'セルフホスト',
+        'comparison.nodb': '外部DB不要'
+      },
+      en: {
+        'nav.features': 'Features',
+        'nav.architecture': 'Architecture',
+        'nav.quickstart': 'Quick Start',
+        'hero.description': 'A Japanese-friendly GUI client for<br>centralized management of multiple WireMock instances',
+        'hero.github': 'View on GitHub',
+        'features.distributed.title': 'Distributed WireMock Management',
+        'features.distributed.desc': 'Deploy stubs to multiple WireMock instances at once. Sync all instances with a single click.',
+        'features.sqlite.title': 'SQLite Persistence',
+        'features.sqlite.desc': 'No external database required. Simple file-based persistence makes backup easy.',
+        'features.i18n.title': 'Japanese UI',
+        'features.i18n.desc': 'Switch between Japanese and English. Simple and intuitive interface for easy stub creation and management.',
+        'features.docker.title': 'Docker Support',
+        'features.docker.desc': 'Distributed as a Docker image. Start easily with docker compose up.',
+        'features.loadtest.title': 'Load Testing Optimized',
+        'features.loadtest.desc': 'Run multiple WireMock instances in parallel to easily build large-scale load testing environments.',
+        'features.project.title': 'Project Management',
+        'features.project.desc': 'Manage stubs as projects for each environment: development, staging, production.',
+        'comparison.title': 'Tool Comparison',
+        'comparison.feature': 'Feature',
+        'comparison.gui': 'GUI',
+        'comparison.distributed': 'Distributed Instance Sync',
+        'comparison.japanese': 'Japanese UI',
+        'comparison.opensource': 'Open Source',
+        'comparison.selfhost': 'Self-hosted',
+        'comparison.nodb': 'No External DB Required'
+      }
+    };
+
+    let currentLang = 'ja';
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'ja' ? 'en' : 'ja';
+      applyTranslations();
+      document.querySelector('.lang-switch').textContent = currentLang === 'ja' ? 'English' : 'Japanese';
+      document.documentElement.lang = currentLang;
+    }
+
+    function applyTranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[currentLang][key]) {
+          el.innerHTML = translations[currentLang][key];
+        }
+      });
+    }
+  </script>
+</body>
+</html>
