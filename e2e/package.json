@@ -6,7 +6,9 @@
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
-    "test:debug": "playwright test --debug"
+    "test:debug": "playwright test --debug",
+    "test:keep-data": "SKIP_CLEANUP=true playwright test",
+    "test:keep-data:headed": "SKIP_CLEANUP=true playwright test --headed"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",

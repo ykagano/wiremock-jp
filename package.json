@@ -15,7 +15,9 @@
     "db:generate": "pnpm --filter @wiremock-jp/backend db:generate",
     "test:e2e": "pnpm --filter @wiremock-jp/e2e test",
     "test:e2e:ui": "pnpm --filter @wiremock-jp/e2e test:ui",
-    "test:e2e:headed": "pnpm --filter @wiremock-jp/e2e test:headed"
+    "test:e2e:headed": "pnpm --filter @wiremock-jp/e2e test:headed",
+    "test:e2e:keep-data": "pnpm --filter @wiremock-jp/e2e test:keep-data",
+    "test:e2e:keep-data:headed": "pnpm --filter @wiremock-jp/e2e test:keep-data:headed"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

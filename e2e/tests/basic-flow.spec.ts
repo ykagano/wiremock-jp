@@ -5,6 +5,22 @@ import { test, expect } from '@playwright/test'
 const WIREMOCK_1_URL = 'http://wiremock-1:8080'
 const WIREMOCK_2_URL = 'http://wiremock-2:8080'
 
+// SKIP_CLEANUP=true でクリーンアップをスキップ（デバッグ・確認用）
+const SKIP_CLEANUP = process.env.SKIP_CLEANUP === 'true'
+
+// クリーンアップ用ヘルパー関数
+async function cleanupProject(page: any, projectName: string) {
+  if (SKIP_CLEANUP) {
+    console.log(`Skipping cleanup for project: ${projectName}`)
+    return
+  }
+  await page.goto('/projects')
+  const card = page.locator('.el-card', { hasText: projectName })
+  await card.locator('.el-dropdown').click()
+  await page.getByRole('menuitem', { name: /削除|Delete/ }).click()
+  await page.locator('.el-message-box').getByRole('button', { name: /はい|Yes|確認/ }).click()
+}
+
 test.describe('WireMock JP E2E Tests - UI', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
@@ -77,11 +93,7 @@ test.describe('WireMock JP E2E Tests - UI', () => {
     await expect(page.locator('.el-card', { hasText: 'Test Instance' })).not.toBeVisible()
 
     // Clean up - delete project
-    await page.goto('/projects')
-    const card = page.locator('.el-card', { hasText: testProjectName })
-    await card.locator('.el-dropdown').click()
-    await page.getByRole('menuitem', { name: /削除|Delete/ }).click()
-    await page.locator('.el-message-box').getByRole('button', { name: /はい|Yes|確認/ }).click()
+    await cleanupProject(page, testProjectName)
   })
 
   test('should check health of WireMock instances', async ({ page }) => {
@@ -112,11 +124,7 @@ test.describe('WireMock JP E2E Tests - UI', () => {
     await expect(page.getByText(/接続に成功|接続OK|Healthy|success/i).first()).toBeVisible({ timeout: 10000 })
 
     // Clean up
-    await page.goto('/projects')
-    const card = page.locator('.el-card', { hasText: healthTestProject })
-    await card.locator('.el-dropdown').click()
-    await page.getByRole('menuitem', { name: /削除|Delete/ }).click()
-    await page.locator('.el-message-box').getByRole('button', { name: /はい|Yes|確認/ }).click()
+    await cleanupProject(page, healthTestProject)
   })
 
   test('should create stub and sync to instances', async ({ page }) => {
@@ -183,11 +191,7 @@ test.describe('WireMock JP E2E Tests - UI', () => {
     await expect(page.getByText(/同期完了|Sync|成功/i).first()).toBeVisible({ timeout: 15000 })
 
     // Clean up
-    await page.goto('/projects')
-    const card = page.locator('.el-card', { hasText: testProjectName })
-    await card.locator('.el-dropdown').click()
-    await page.getByRole('menuitem', { name: /削除|Delete/ }).click()
-    await page.locator('.el-message-box').getByRole('button', { name: /はい|Yes|確認/ }).click()
+    await cleanupProject(page, testProjectName)
   })
 
   test('should create stub using form', async ({ page }) => {
@@ -234,11 +238,7 @@ test.describe('WireMock JP E2E Tests - UI', () => {
     await expect(page.getByText(/保存|成功|success|スタブ/i).first()).toBeVisible({ timeout: 5000 })
 
     // Clean up - go back and delete project
-    await page.goto('/projects')
-    const card = page.locator('.el-card', { hasText: testProjectName })
-    await card.locator('.el-dropdown').click()
-    await page.getByRole('menuitem', { name: /削除|Delete/ }).click()
-    await page.locator('.el-message-box').getByRole('button', { name: /はい|Yes|確認/ }).click()
+    await cleanupProject(page, testProjectName)
   })
 
   test('should validate form inputs', async ({ page }) => {
@@ -311,10 +311,6 @@ test.describe('WireMock JP E2E Tests - UI', () => {
     await expect(page.getByText(/接続に失敗|接続エラー|Unhealthy|エラー|failed/i).first()).toBeVisible({ timeout: 10000 })
 
     // Clean up
-    await page.goto('/projects')
-    const card = page.locator('.el-card', { hasText: errorTestProject })
-    await card.locator('.el-dropdown').click()
-    await page.getByRole('menuitem', { name: /削除|Delete/ }).click()
-    await page.locator('.el-message-box').getByRole('button', { name: /はい|Yes|確認/ }).click()
+    await cleanupProject(page, errorTestProject)
   })
 })
