@@ -118,7 +118,9 @@
     "url": "URL",
     "status": "Status",
     "detail": "Detail",
-    "confirmClear": "Are you sure you want to clear all request logs?"
+    "confirmClear": "Are you sure you want to clear all request logs?",
+    "selectInstance": "Select Instance",
+    "noInstances": "No instances"
   },
   "instances": {
     "title": "WireMock Instances",

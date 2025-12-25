@@ -87,9 +87,6 @@ export const useProjectStore = defineStore('project', () => {
 
   // 現在のプロジェクトを設定
   async function setCurrentProject(id: string) {
-    const project = projects.value.find(p => p.id === id)
-    if (!project) return
-
     currentProjectId.value = id
     localStorage.setItem(CURRENT_PROJECT_KEY, id)
 

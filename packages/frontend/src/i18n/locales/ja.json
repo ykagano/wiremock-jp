@@ -118,7 +118,9 @@
     "url": "URL",
     "status": "ステータス",
     "detail": "詳細",
-    "confirmClear": "すべてのリクエストログをクリアしますか？"
+    "confirmClear": "すべてのリクエストログをクリアしますか？",
+    "selectInstance": "インスタンスを選択",
+    "noInstances": "インスタンスがありません"
   },
   "instances": {
     "title": "WireMockインスタンス",

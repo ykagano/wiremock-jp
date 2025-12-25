@@ -141,6 +141,15 @@ export const wiremockInstanceApi = {
     return response.data.data
   },
 
+  async getUnmatchedRequests(id: string): Promise<any> {
+    const response = await apiClient.get<ApiResponse<any>>(`/api/wiremock-instances/${id}/requests/unmatched`)
+    return response.data.data
+  },
+
+  async clearRequests(id: string): Promise<void> {
+    await apiClient.delete(`/api/wiremock-instances/${id}/requests`)
+  },
+
   async reset(id: string): Promise<void> {
     await apiClient.post(`/api/wiremock-instances/${id}/reset`)
   }

@@ -253,6 +253,74 @@ export async function wiremockInstanceRoutes(fastify: FastifyInstance) {
     }
   })
 
+  // Get unmatched requests from WireMock instance
+  fastify.get('/:id/requests/unmatched', async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    const { id } = request.params
+
+    const instance = await fastify.prisma.wiremockInstance.findUnique({
+      where: { id },
+      include: { project: true }
+    })
+
+    if (!instance) {
+      return reply.status(404).send({
+        success: false,
+        error: 'Instance not found'
+      })
+    }
+
+    try {
+      const response = await axios.get(`${instance.url}/__admin/requests/unmatched`, {
+        timeout: 10000
+      })
+
+      return reply.send({
+        success: true,
+        data: response.data
+      })
+    } catch (error: any) {
+      return reply.status(502).send({
+        success: false,
+        error: 'Failed to fetch unmatched requests from WireMock',
+        details: error.message
+      })
+    }
+  })
+
+  // Clear requests from WireMock instance
+  fastify.delete('/:id/requests', async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    const { id } = request.params
+
+    const instance = await fastify.prisma.wiremockInstance.findUnique({
+      where: { id },
+      include: { project: true }
+    })
+
+    if (!instance) {
+      return reply.status(404).send({
+        success: false,
+        error: 'Instance not found'
+      })
+    }
+
+    try {
+      await axios.delete(`${instance.url}/__admin/requests`, {
+        timeout: 10000
+      })
+
+      return reply.send({
+        success: true,
+        message: 'Request log cleared successfully'
+      })
+    } catch (error: any) {
+      return reply.status(502).send({
+        success: false,
+        error: 'Failed to clear requests from WireMock',
+        details: error.message
+      })
+    }
+  })
+
   // Reset WireMock instance
   fastify.post('/:id/reset', async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
     const { id } = request.params

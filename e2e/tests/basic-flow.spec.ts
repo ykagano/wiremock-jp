@@ -284,6 +284,138 @@ test.describe('WireMock JP E2E Tests - UI', () => {
     }
   })
 
+  test('should clear request log', async ({ page, request }) => {
+    const testProjectName = `Request Log Clear Test ${Date.now()}`
+
+    // Create project - use wiremock-2 to avoid affecting other tests' logs
+    await page.locator('.page-header').getByRole('button', { name: /プロジェクト追加|Add Project/ }).click()
+    await page.getByLabel(/プロジェクト名|Name/).fill(testProjectName)
+    await page.getByLabel(/WireMock URL|Base URL/).fill(WIREMOCK_2_URL)
+    await page.locator('.el-dialog').getByRole('button', { name: /保存|Save/ }).click()
+
+    // Go to project detail
+    const projectCard = page.locator('.el-card', { hasText: testProjectName })
+    await projectCard.getByRole('button', { name: /詳細|Detail/ }).click()
+
+    // Add instance - use wiremock-2
+    await page.locator('.tab-header').getByRole('button', { name: /インスタンス追加|Add Instance/ }).click()
+    await page.locator('.el-dialog').getByLabel(/インスタンス名|Name/).fill('Clear Log Instance')
+    await page.locator('.el-dialog').getByLabel(/URL/).fill(WIREMOCK_2_URL)
+    await page.locator('.el-dialog').getByRole('button', { name: /保存|Save/ }).click()
+    await page.waitForTimeout(1000)
+
+    // Make a request to WireMock to create some log entries (use localhost:8082 for wiremock-2)
+    try {
+      await request.get('http://localhost:8082/some-test-endpoint')
+    } catch {
+      // Request might fail, continue anyway
+    }
+
+    // Navigate to request log page via sidebar
+    await page.locator('.el-aside').getByText(/リクエスト|Requests/).click()
+    await page.waitForTimeout(1000)
+
+    // Click refresh button
+    await page.getByRole('button', { name: /更新|Refresh/ }).click()
+    await page.waitForTimeout(500)
+
+    // Clear request log
+    await page.getByRole('button', { name: /クリア|Clear/ }).click()
+    await page.locator('.el-message-box').getByRole('button', { name: /はい|Yes|確認/ }).click()
+
+    // Wait for success message
+    await expect(page.getByText(/成功|success|クリア/i).first()).toBeVisible({ timeout: 5000 })
+
+    // Clean up
+    await cleanupProject(page, testProjectName)
+  })
+
+  test('should display request log', async ({ page, request }) => {
+    const testProjectName = `Request Log Test ${Date.now()}`
+
+    // Create project
+    await page.locator('.page-header').getByRole('button', { name: /プロジェクト追加|Add Project/ }).click()
+    await page.getByLabel(/プロジェクト名|Name/).fill(testProjectName)
+    await page.getByLabel(/WireMock URL|Base URL/).fill(WIREMOCK_1_URL)
+    await page.locator('.el-dialog').getByRole('button', { name: /保存|Save/ }).click()
+
+    // Go to project detail
+    const projectCard = page.locator('.el-card', { hasText: testProjectName })
+    await projectCard.getByRole('button', { name: /詳細|Detail/ }).click()
+
+    // Add instance
+    await page.locator('.tab-header').getByRole('button', { name: /インスタンス追加|Add Instance/ }).click()
+    await page.locator('.el-dialog').getByLabel(/インスタンス名|Name/).fill('Request Log Instance')
+    await page.locator('.el-dialog').getByLabel(/URL/).fill(WIREMOCK_1_URL)
+    await page.locator('.el-dialog').getByRole('button', { name: /保存|Save/ }).click()
+    await page.waitForTimeout(1000)
+
+    // Navigate to stubs tab and create a stub
+    await page.getByRole('tab', { name: /スタブ|Stubs/ }).click()
+    await page.waitForTimeout(500)
+
+    await page.getByRole('button', { name: /新規作成|マッピング追加|Add/ }).first().click()
+
+    // Fill in stub
+    const urlInput = page.getByPlaceholder('/api/users')
+    await expect(urlInput).toBeVisible()
+    await urlInput.fill('/api/request-log-test')
+
+    // Go to response tab and fill in response body
+    await page.getByRole('tab', { name: /レスポンス|Response/ }).click()
+    const responseTextarea = page.getByPlaceholder('{"message": "success"}')
+    await expect(responseTextarea).toBeVisible()
+    await responseTextarea.fill('{"message": "Request log test response"}')
+
+    // Save the stub
+    await page.getByRole('button', { name: /保存|Save/ }).click()
+    await expect(page.getByText(/保存|成功|success|スタブ/i).first()).toBeVisible({ timeout: 5000 })
+
+    // Navigate back to project detail and sync
+    await page.locator('.el-aside').getByText(/プロジェクト|Projects/).click()
+    await page.waitForTimeout(500)
+
+    const projectCardForSync = page.locator('.el-card', { hasText: testProjectName })
+    await projectCardForSync.getByRole('button', { name: /詳細|Detail/ }).click()
+
+    // Click on instances tab
+    await page.getByRole('tab', { name: /インスタンス|Instances/ }).click()
+
+    // Sync all instances
+    await page.getByRole('button', { name: /全インスタンスに同期|Sync All/ }).click()
+    await expect(page.getByText(/同期完了|Sync|成功/i).first()).toBeVisible({ timeout: 15000 })
+    await page.waitForTimeout(1000)
+
+    // Make a request to WireMock via the backend proxy
+    // Since E2E tests run in the browser context and WireMock is on Docker network,
+    // we need to use the backend API to trigger the request
+    // Actually, we can directly call WireMock from the test (Playwright request context)
+    // but since wiremock-1 is in Docker network, we need to use localhost:8081 for host access
+    try {
+      await request.get('http://localhost:8081/api/request-log-test')
+    } catch {
+      // Request might fail if wiremock is not accessible from host, continue anyway
+    }
+
+    // Navigate to request log page via sidebar
+    await page.locator('.el-aside').getByText(/リクエスト|Requests/).click()
+    await page.waitForTimeout(1000)
+
+    // Verify we're on request log page
+    await expect(page.getByRole('heading', { name: /リクエストログ|Request Log/ })).toBeVisible()
+
+    // Check tabs are present (instances should be loaded automatically)
+    await expect(page.getByRole('tab', { name: /すべて|All/ })).toBeVisible()
+    await expect(page.getByRole('tab', { name: /マッチング成功|Matched/ })).toBeVisible()
+    await expect(page.getByRole('tab', { name: /マッチング失敗|Unmatched/ })).toBeVisible()
+
+    // Verify request log entry is displayed (use first() since it appears in multiple tabs)
+    await expect(page.locator('code', { hasText: '/api/request-log-test' }).first()).toBeVisible({ timeout: 10000 })
+
+    // Clean up
+    await cleanupProject(page, testProjectName)
+  })
+
   test('should handle invalid WireMock instance gracefully', async ({ page }) => {
     const errorTestProject = `Error Test ${Date.now()}`
 
