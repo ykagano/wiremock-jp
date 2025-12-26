@@ -49,6 +49,11 @@ RUN pnpm run build:backend
 # Stage 3: Runtime image
 FROM node:22-alpine
 
+# WireMock version - update this when upgrading
+# IMPORTANT: Test API compatibility before upgrading
+# Latest stable: 3.13.2 (as of 2025-11-14)
+ARG WIREMOCK_VERSION=3.13.2
+
 # Install nginx, OpenJDK (for WireMock), and supervisor
 RUN apk add --no-cache nginx openjdk17-jre supervisor
 
@@ -65,9 +70,9 @@ COPY --from=backend-builder /app/package.json ./
 # Copy frontend build to backend's public directory
 COPY --from=frontend-builder /app/packages/frontend/dist ./packages/backend/public
 
-# Download WireMock standalone
+# Download WireMock standalone (version pinned for API stability)
 RUN wget -O /app/wiremock-standalone.jar \
-    https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.10.0/wiremock-standalone-3.10.0.jar
+    https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/${WIREMOCK_VERSION}/wiremock-standalone-${WIREMOCK_VERSION}.jar
 
 # Create necessary directories
 RUN mkdir -p /app/packages/backend/data \
