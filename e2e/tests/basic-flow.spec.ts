@@ -21,7 +21,7 @@ async function cleanupProject(page: any, projectName: string) {
   await page.locator('.el-message-box').getByRole('button', { name: /はい|Yes|確認/ }).click()
 }
 
-test.describe('WireMock JP E2E Tests - UI', () => {
+test.describe('WireMock Hub E2E Tests - UI', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
   })

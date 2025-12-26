@@ -62,7 +62,7 @@ RUN mkdir -p /app/packages/backend/data
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV DATABASE_URL=file:./data/wiremock-jp.db
+ENV DATABASE_URL=file:./data/wiremock-hub.db
 ENV PORT=3000
 ENV HOST=0.0.0.0
 

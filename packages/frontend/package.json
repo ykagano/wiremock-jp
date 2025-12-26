@@ -1,5 +1,5 @@
 {
-  "name": "@wiremock-jp/frontend",
+  "name": "@wiremock-hub/frontend",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
-    "@wiremock-jp/shared": "workspace:*",
+    "@wiremock-hub/shared": "workspace:*",
     "axios": "^1.13.2",
     "dayjs": "^1.11.19",
     "element-plus": "^2.12.0",

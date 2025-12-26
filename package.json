@@ -1,5 +1,5 @@
 {
-  "name": "wiremock-jp",
+  "name": "wiremock-hub",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,16 +8,16 @@
   },
   "scripts": {
     "dev": "pnpm -r --parallel dev",
-    "dev:frontend": "pnpm --filter @wiremock-jp/frontend dev",
-    "dev:backend": "pnpm --filter @wiremock-jp/backend dev",
+    "dev:frontend": "pnpm --filter @wiremock-hub/frontend dev",
+    "dev:backend": "pnpm --filter @wiremock-hub/backend dev",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
-    "db:generate": "pnpm --filter @wiremock-jp/backend db:generate",
-    "test:e2e": "pnpm --filter @wiremock-jp/e2e test",
-    "test:e2e:ui": "pnpm --filter @wiremock-jp/e2e test:ui",
-    "test:e2e:headed": "pnpm --filter @wiremock-jp/e2e test:headed",
-    "test:e2e:keep-data": "pnpm --filter @wiremock-jp/e2e test:keep-data",
-    "test:e2e:keep-data:headed": "pnpm --filter @wiremock-jp/e2e test:keep-data:headed"
+    "db:generate": "pnpm --filter @wiremock-hub/backend db:generate",
+    "test:e2e": "pnpm --filter @wiremock-hub/e2e test",
+    "test:e2e:ui": "pnpm --filter @wiremock-hub/e2e test:ui",
+    "test:e2e:headed": "pnpm --filter @wiremock-hub/e2e test:headed",
+    "test:e2e:keep-data": "pnpm --filter @wiremock-hub/e2e test:keep-data",
+    "test:e2e:keep-data:headed": "pnpm --filter @wiremock-hub/e2e test:keep-data:headed"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

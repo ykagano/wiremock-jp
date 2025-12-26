@@ -1,4 +1,4 @@
-# WireMock JP
+# WireMock Hub
 
 A Japanese GUI client for WireMock with centralized management support for distributed WireMock environments.
 
@@ -23,7 +23,7 @@ A Japanese GUI client for WireMock with centralized management support for distr
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        WireMock JP                              │
+│                        WireMock Hub                             │
 │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐      │
 │  │   Frontend   │ -> │   Backend    │ -> │    SQLite    │      │
 │  │   (Vue 3)    │    │  (Fastify)   │    │ (Persistence)│      │
@@ -54,7 +54,7 @@ A Japanese GUI client for WireMock with centralized management support for distr
 ## Quick Start with Docker
 
 ```bash
-# Run WireMock JP (management UI only)
+# Run WireMock Hub (management UI only)
 docker compose up -d
 
 # Or with demo WireMock instances for testing
@@ -63,25 +63,25 @@ docker compose -f docker-compose.yml -f docker-compose.demo.yml up -d
 
 Access the UI at http://localhost:3000
 
-> **Note**: WireMock JP is a management UI only. WireMock instances should be deployed separately (on different servers, Kubernetes pods, etc.) to achieve scalability. The `docker-compose.demo.yml` includes sample WireMock instances for testing purposes only.
+> **Note**: WireMock Hub is a management UI only. WireMock instances should be deployed separately (on different servers, Kubernetes pods, etc.) to achieve scalability. The `docker-compose.demo.yml` includes sample WireMock instances for testing purposes only.
 
 ### Production Deployment
 
 ```yaml
-# docker-compose.yml - Deploy WireMock JP
+# docker-compose.yml - Deploy WireMock Hub
 services:
-  wiremock-jp:
-    image: wiremock-jp:latest  # or build: .
+  wiremock-hub:
+    image: wiremock-hub:latest  # or build: .
     ports:
       - "3000:3000"
     volumes:
-      - wiremock-jp-data:/app/packages/backend/data
+      - wiremock-hub-data:/app/packages/backend/data
     environment:
-      - DATABASE_URL=file:./data/wiremock-jp.db
+      - DATABASE_URL=file:./data/wiremock-hub.db
     restart: unless-stopped
 
 volumes:
-  wiremock-jp-data:
+  wiremock-hub-data:
 ```
 
 Then register your existing WireMock instances (running on different servers) via the UI.
@@ -112,7 +112,7 @@ pnpm run dev
 
 ```bash
 # packages/backend/.env
-DATABASE_URL="file:./data/wiremock-jp.db"
+DATABASE_URL="file:./data/wiremock-hub.db"
 ```
 
 ## Usage

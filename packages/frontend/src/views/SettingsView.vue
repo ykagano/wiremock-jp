@@ -24,8 +24,8 @@
           Apache 2.0
         </el-descriptions-item>
         <el-descriptions-item label="GitHub">
-          <a href="https://github.com/ykagano/wiremock-jp" target="_blank">
-            wiremock-jp
+          <a href="https://github.com/ykagano/wiremock-hub" target="_blank">
+            wiremock-hub
           </a>
         </el-descriptions-item>
       </el-descriptions>

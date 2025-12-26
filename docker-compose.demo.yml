@@ -4,7 +4,7 @@
 #
 # WireMock URLs:
 #   - From host machine: http://localhost:8081, http://localhost:8082
-#   - From wiremock-jp container: http://wiremock-1:8080, http://wiremock-2:8080
+#   - From wiremock-hub container: http://wiremock-1:8080, http://wiremock-2:8080
 services:
   wiremock-1:
     image: wiremock/wiremock:latest

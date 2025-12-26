@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
 import axios from 'axios'
-import type { Mapping } from '@wiremock-jp/shared'
+import type { Mapping } from '@wiremock-hub/shared'
 
 const createStubSchema = z.object({
   projectId: z.string().uuid(),

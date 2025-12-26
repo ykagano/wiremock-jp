@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WireMock JP - 分散WireMock管理GUI</title>
+  <title>WireMock Hub - 分散WireMock管理GUI</title>
   <meta name="description" content="複数のWireMockインスタンスを一元管理できる日本語対応GUIクライアント">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -343,12 +343,12 @@
 <body>
   <header>
     <div class="container header-content">
-      <a href="#" class="logo">WireMock JP</a>
+      <a href="#" class="logo">WireMock Hub</a>
       <nav class="nav-links">
         <a href="#features" data-i18n="nav.features">機能</a>
         <a href="#architecture" data-i18n="nav.architecture">アーキテクチャ</a>
         <a href="#quickstart" data-i18n="nav.quickstart">クイックスタート</a>
-        <a href="https://github.com/ykagano/wiremock-jp">GitHub</a>
+        <a href="https://github.com/ykagano/wiremock-hub">GitHub</a>
         <button class="lang-switch" onclick="toggleLanguage()">English</button>
       </nav>
     </div>
@@ -356,9 +356,9 @@
 
   <section class="hero">
     <div class="container">
-      <h1>WireMock JP</h1>
+      <h1>WireMock Hub</h1>
       <p data-i18n="hero.description">複数のWireMockインスタンスを一元管理できる<br>日本語対応GUIクライアント</p>
-      <a href="https://github.com/ykagano/wiremock-jp" class="btn btn-primary" data-i18n="hero.github">GitHub で見る</a>
+      <a href="https://github.com/ykagano/wiremock-hub" class="btn btn-primary" data-i18n="hero.github">GitHub で見る</a>
       <a href="#quickstart" class="btn btn-secondary" data-i18n="nav.quickstart">クイックスタート</a>
     </div>
   </section>
@@ -366,7 +366,7 @@
   <section class="screenshot">
     <div class="container">
       <figure class="screenshot-figure">
-        <img id="screenshot-img" src="images/wiremock-jp.png" alt="WireMock JP スクリーンショット" class="screenshot-img">
+        <img id="screenshot-img" src="images/wiremock-hub.png" alt="WireMock Hub スクリーンショット" class="screenshot-img">
         <figcaption class="screenshot-caption" data-i18n="screenshot.caption">プロジェクト一覧画面 - 複数のWireMock環境をプロジェクトとして管理</figcaption>
       </figure>
     </div>
@@ -414,7 +414,7 @@
     <div class="container">
       <h2 class="section-title" data-i18n="nav.architecture">アーキテクチャ</h2>
       <div class="arch-diagram">┌─────────────────────────────────────────────────────────────────┐
-│                        WireMock JP                              │
+│                        WireMock Hub                             │
 │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐      │
 │  │   Frontend   │ -> │   Backend    │ -> │    SQLite    │      │
 │  │   (Vue 3)    │    │  (Fastify)   │    │ (Persistence)│      │
@@ -438,7 +438,7 @@
     <div class="container">
       <h2 class="section-title" data-i18n="nav.quickstart">クイックスタート</h2>
       <div class="code-block">
-<span class="comment" data-i18n="quickstart.start"># WireMock JP を起動</span><br>
+<span class="comment" data-i18n="quickstart.start"># WireMock Hub を起動</span><br>
 <span class="command">docker compose up -d</span><br>
 <br>
 <span class="comment" data-i18n="quickstart.demo"># デモ用WireMockインスタンス付きで起動</span><br>
@@ -461,7 +461,7 @@
         <thead>
           <tr>
             <th data-i18n="comparison.feature">機能</th>
-            <th>WireMock JP</th>
+            <th>WireMock Hub</th>
             <th>WireMock</th>
             <th>WireMock Cloud</th>
           </tr>
@@ -510,11 +510,11 @@
 
   <footer>
     <div class="container">
-      <p>WireMock JP - Apache 2.0 License</p>
+      <p>WireMock Hub - Apache 2.0 License</p>
       <div class="footer-links">
-        <a href="https://github.com/ykagano/wiremock-jp">GitHub</a>
-        <a href="https://github.com/ykagano/wiremock-jp/issues">Issues</a>
-        <a href="https://github.com/ykagano/wiremock-jp/blob/main/README.md">Documentation</a>
+        <a href="https://github.com/ykagano/wiremock-hub">GitHub</a>
+        <a href="https://github.com/ykagano/wiremock-hub/issues">Issues</a>
+        <a href="https://github.com/ykagano/wiremock-hub/blob/main/README.md">Documentation</a>
       </div>
     </div>
   </footer>
@@ -547,7 +547,7 @@
         'comparison.selfhost': 'セルフホスト',
         'comparison.nodb': '外部DB不要',
         'screenshot.caption': 'プロジェクト一覧画面 - 複数のWireMock環境をプロジェクトとして管理',
-        'quickstart.start': '# WireMock JP を起動',
+        'quickstart.start': '# WireMock Hub を起動',
         'quickstart.demo': '# デモ用WireMockインスタンス付きで起動',
         'quickstart.browser': '# ブラウザでアクセス',
         'quickstart.demourl': '# デモ用インスタンスのURL（プロジェクト作成後に登録）'
@@ -579,7 +579,7 @@
         'comparison.selfhost': 'Self-hosted',
         'comparison.nodb': 'No External DB Required',
         'screenshot.caption': 'Projects List - Manage multiple WireMock environments as projects',
-        'quickstart.start': '# Start WireMock JP',
+        'quickstart.start': '# Start WireMock Hub',
         'quickstart.demo': '# Start with demo WireMock instances',
         'quickstart.browser': '# Open in browser',
         'quickstart.demourl': '# Demo instance URLs (register after creating a project)'
@@ -597,8 +597,8 @@
       // Switch screenshot image
       const screenshotImg = document.getElementById('screenshot-img');
       if (screenshotImg) {
-        screenshotImg.src = currentLang === 'ja' ? 'images/wiremock-jp.png' : 'images/wiremock-en.png';
-        screenshotImg.alt = currentLang === 'ja' ? 'WireMock JP スクリーンショット' : 'WireMock JP Screenshot';
+        screenshotImg.src = currentLang === 'ja' ? 'images/wiremock-hub.png' : 'images/wiremock-en.png';
+        screenshotImg.alt = currentLang === 'ja' ? 'WireMock Hub スクリーンショット' : 'WireMock Hub Screenshot';
       }
     }
 

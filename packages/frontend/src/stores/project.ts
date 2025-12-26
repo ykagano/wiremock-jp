@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { projectApi, wiremockInstanceApi, type Project, type WiremockInstance, type CreateProjectInput, type UpdateProjectInput, type CreateWiremockInstanceInput } from '@/services/api'
 import { ElMessage } from 'element-plus'
 
-const CURRENT_PROJECT_KEY = 'wiremock-jp-current-project'
+const CURRENT_PROJECT_KEY = 'wiremock-hub-current-project'
 
 export const useProjectStore = defineStore('project', () => {
   const projects = ref<Project[]>([])

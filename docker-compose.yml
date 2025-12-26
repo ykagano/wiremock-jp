@@ -1,17 +1,17 @@
-# WireMock JP - Management UI only
+# WireMock Hub - Management UI only
 # WireMock instances should be deployed separately for scalability
 services:
-  wiremock-jp:
+  wiremock-hub:
     build: .
     ports:
       - "3000:3000"
     volumes:
-      - wiremock-jp-data:/app/packages/backend/data
+      - wiremock-hub-data:/app/packages/backend/data
     environment:
-      - DATABASE_URL=file:./data/wiremock-jp.db
+      - DATABASE_URL=file:./data/wiremock-hub.db
       - PORT=3000
       - HOST=0.0.0.0
     restart: unless-stopped
 
 volumes:
-  wiremock-jp-data:
+  wiremock-hub-data:

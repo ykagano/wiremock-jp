@@ -32,7 +32,7 @@ importers:
       '@prisma/client':
         specifier: ^6.8.2
         version: 6.19.1(prisma@6.19.1(typescript@5.9.3))(typescript@5.9.3)
-      '@wiremock-jp/shared':
+      '@wiremock-hub/shared':
         specifier: workspace:*
         version: link:../shared
       axios:
@@ -63,7 +63,7 @@ importers:
       '@element-plus/icons-vue':
         specifier: ^2.3.2
         version: 2.3.2(vue@3.5.26(typescript@5.9.3))
-      '@wiremock-jp/shared':
+      '@wiremock-hub/shared':
         specifier: workspace:*
         version: link:../shared
       axios:
