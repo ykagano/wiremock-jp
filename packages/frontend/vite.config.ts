@@ -8,6 +8,7 @@ import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
 const monacoEditorPlugin = (monacoEditorPluginModule as any).default || monacoEditorPluginModule
 
 export default defineConfig({
+  base: process.env.VITE_BASE_PATH || '/',
   plugins: [
     vue(),
     vueDevTools(),
@@ -20,6 +21,11 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      // Backend API proxy for development
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true
+      },
       // WireMock Admin APIへのプロキシ（CORS回避）
       '/__admin': {
         target: 'http://localhost:8080',

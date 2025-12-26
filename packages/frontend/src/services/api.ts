@@ -1,6 +1,10 @@
 import axios, { AxiosInstance, AxiosError } from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+// Use relative path for API calls to work with nginx proxy in all-in-one mode
+// In development: proxied by Vite to localhost:3000
+// In production (all-in-one): served from same origin via nginx
+// Use import.meta.env.BASE_URL to get the base path from Vite config
+const API_BASE_URL = import.meta.env.VITE_API_URL || `${import.meta.env.BASE_URL}api`
 
 // Axios instance for backend API
 const apiClient: AxiosInstance = axios.create({
@@ -55,27 +59,27 @@ export interface UpdateProjectInput {
 // Project API
 export const projectApi = {
   async list(): Promise<Project[]> {
-    const response = await apiClient.get<ApiResponse<Project[]>>('/api/projects')
+    const response = await apiClient.get<ApiResponse<Project[]>>('/projects')
     return response.data.data || []
   },
 
   async get(id: string): Promise<Project> {
-    const response = await apiClient.get<ApiResponse<Project>>(`/api/projects/${id}`)
+    const response = await apiClient.get<ApiResponse<Project>>(`/projects/${id}`)
     return response.data.data!
   },
 
   async create(input: CreateProjectInput): Promise<Project> {
-    const response = await apiClient.post<ApiResponse<Project>>('/api/projects', input)
+    const response = await apiClient.post<ApiResponse<Project>>('/projects', input)
     return response.data.data!
   },
 
   async update(id: string, input: UpdateProjectInput): Promise<Project> {
-    const response = await apiClient.put<ApiResponse<Project>>(`/api/projects/${id}`, input)
+    const response = await apiClient.put<ApiResponse<Project>>(`/projects/${id}`, input)
     return response.data.data!
   },
 
   async delete(id: string): Promise<void> {
-    await apiClient.delete(`/api/projects/${id}`)
+    await apiClient.delete(`/projects/${id}`)
   }
 }
 
@@ -106,52 +110,52 @@ export interface UpdateWiremockInstanceInput {
 // WireMock Instance API
 export const wiremockInstanceApi = {
   async list(projectId: string): Promise<WiremockInstance[]> {
-    const response = await apiClient.get<ApiResponse<WiremockInstance[]>>('/api/wiremock-instances', {
+    const response = await apiClient.get<ApiResponse<WiremockInstance[]>>('/wiremock-instances', {
       params: { projectId }
     })
     return response.data.data || []
   },
 
   async get(id: string): Promise<WiremockInstance> {
-    const response = await apiClient.get<ApiResponse<WiremockInstance>>(`/api/wiremock-instances/${id}`)
+    const response = await apiClient.get<ApiResponse<WiremockInstance>>(`/wiremock-instances/${id}`)
     return response.data.data!
   },
 
   async create(input: CreateWiremockInstanceInput): Promise<WiremockInstance> {
-    const response = await apiClient.post<ApiResponse<WiremockInstance>>('/api/wiremock-instances', input)
+    const response = await apiClient.post<ApiResponse<WiremockInstance>>('/wiremock-instances', input)
     return response.data.data!
   },
 
   async update(id: string, input: UpdateWiremockInstanceInput): Promise<WiremockInstance> {
-    const response = await apiClient.put<ApiResponse<WiremockInstance>>(`/api/wiremock-instances/${id}`, input)
+    const response = await apiClient.put<ApiResponse<WiremockInstance>>(`/wiremock-instances/${id}`, input)
     return response.data.data!
   },
 
   async delete(id: string): Promise<void> {
-    await apiClient.delete(`/api/wiremock-instances/${id}`)
+    await apiClient.delete(`/wiremock-instances/${id}`)
   },
 
   async getMappings(id: string): Promise<any> {
-    const response = await apiClient.get<ApiResponse<any>>(`/api/wiremock-instances/${id}/mappings`)
+    const response = await apiClient.get<ApiResponse<any>>(`/wiremock-instances/${id}/mappings`)
     return response.data.data
   },
 
   async getRequests(id: string): Promise<any> {
-    const response = await apiClient.get<ApiResponse<any>>(`/api/wiremock-instances/${id}/requests`)
+    const response = await apiClient.get<ApiResponse<any>>(`/wiremock-instances/${id}/requests`)
     return response.data.data
   },
 
   async getUnmatchedRequests(id: string): Promise<any> {
-    const response = await apiClient.get<ApiResponse<any>>(`/api/wiremock-instances/${id}/requests/unmatched`)
+    const response = await apiClient.get<ApiResponse<any>>(`/wiremock-instances/${id}/requests/unmatched`)
     return response.data.data
   },
 
   async clearRequests(id: string): Promise<void> {
-    await apiClient.delete(`/api/wiremock-instances/${id}/requests`)
+    await apiClient.delete(`/wiremock-instances/${id}/requests`)
   },
 
   async reset(id: string): Promise<void> {
-    await apiClient.post(`/api/wiremock-instances/${id}/reset`)
+    await apiClient.post(`/wiremock-instances/${id}/reset`)
   }
 }
 
@@ -185,37 +189,37 @@ export interface UpdateStubInput {
 // Stub API
 export const stubApi = {
   async list(projectId: string): Promise<Stub[]> {
-    const response = await apiClient.get<ApiResponse<Stub[]>>('/api/stubs', {
+    const response = await apiClient.get<ApiResponse<Stub[]>>('/stubs', {
       params: { projectId }
     })
     return response.data.data || []
   },
 
   async get(id: string): Promise<Stub> {
-    const response = await apiClient.get<ApiResponse<Stub>>(`/api/stubs/${id}`)
+    const response = await apiClient.get<ApiResponse<Stub>>(`/stubs/${id}`)
     return response.data.data!
   },
 
   async create(input: CreateStubInput): Promise<Stub> {
-    const response = await apiClient.post<ApiResponse<Stub>>('/api/stubs', input)
+    const response = await apiClient.post<ApiResponse<Stub>>('/stubs', input)
     return response.data.data!
   },
 
   async update(id: string, input: UpdateStubInput): Promise<Stub> {
-    const response = await apiClient.put<ApiResponse<Stub>>(`/api/stubs/${id}`, input)
+    const response = await apiClient.put<ApiResponse<Stub>>(`/stubs/${id}`, input)
     return response.data.data!
   },
 
   async delete(id: string): Promise<void> {
-    await apiClient.delete(`/api/stubs/${id}`)
+    await apiClient.delete(`/stubs/${id}`)
   },
 
   async sync(id: string, instanceId: string): Promise<void> {
-    await apiClient.post(`/api/stubs/${id}/sync`, { instanceId })
+    await apiClient.post(`/stubs/${id}/sync`, { instanceId })
   },
 
   async syncAll(projectId: string, instanceId: string, resetBeforeSync: boolean = true): Promise<{ success: number; failed: number; errors: string[] }> {
-    const response = await apiClient.post<ApiResponse<{ success: number; failed: number; errors: string[] }>>('/api/stubs/sync-all', {
+    const response = await apiClient.post<ApiResponse<{ success: number; failed: number; errors: string[] }>>('/stubs/sync-all', {
       projectId,
       instanceId,
       resetBeforeSync

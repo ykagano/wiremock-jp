@@ -11,6 +11,8 @@
     "dev:frontend": "pnpm --filter @wiremock-hub/frontend dev",
     "dev:backend": "pnpm --filter @wiremock-hub/backend dev",
     "build": "pnpm -r build",
+    "build:frontend": "pnpm --filter @wiremock-hub/frontend build",
+    "build:backend": "pnpm --filter @wiremock-hub/backend build",
     "lint": "pnpm -r lint",
     "db:generate": "pnpm --filter @wiremock-hub/backend db:generate",
     "test:e2e": "pnpm --filter @wiremock-hub/e2e test",

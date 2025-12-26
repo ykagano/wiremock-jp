@@ -7,6 +7,7 @@ import { stubRoutes } from './routes/stubs.js'
 import { wiremockInstanceRoutes } from './routes/wiremock-instances.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { existsSync } from 'fs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -39,10 +40,14 @@ fastify.get('/api/health', async () => {
 // Serve frontend static files in production
 if (process.env.NODE_ENV === 'production') {
   // __dirname is /app/packages/backend/dist
-  // Go up to /app/packages/backend, then to ../frontend/dist
+  // Check for public directory first (Docker), then fall back to frontend/dist (local)
+  const publicPath = path.join(__dirname, '../public')
   const frontendPath = path.join(__dirname, '../../frontend/dist')
+
+  const staticPath = existsSync(publicPath) ? publicPath : frontendPath
+
   await fastify.register(fastifyStatic, {
-    root: frontendPath,
+    root: staticPath,
     prefix: '/',
   })
 
