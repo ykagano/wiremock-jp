@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { stubApi, type Stub, type CreateStubInput, type UpdateStubInput } from '@/services/api'
+import { stubApi, wiremockInstanceApi, type Stub, type CreateStubInput, type UpdateStubInput } from '@/services/api'
 import { useProjectStore } from './project'
 import { ElMessage } from 'element-plus'
 import type { Mapping } from '@/types/wiremock'
@@ -155,6 +155,54 @@ export const useMappingStore = defineStore('mapping', () => {
     return stubs.value.find(s => s.id === id)
   }
 
+  // WireMockインスタンスのマッピングをリセット
+  async function resetMappings(): Promise<boolean> {
+    const projectStore = useProjectStore()
+    if (!projectStore.currentProjectId) {
+      ElMessage.warning('プロジェクトが選択されていません')
+      return false
+    }
+
+    // インスタンスがロードされていなければロードする
+    if (projectStore.wiremockInstances.length === 0) {
+      await projectStore.fetchWiremockInstances(projectStore.currentProjectId)
+    }
+
+    if (projectStore.wiremockInstances.length === 0) {
+      ElMessage.warning('WireMockインスタンスがありません')
+      return false
+    }
+
+    loading.value = true
+    let successCount = 0
+    let failCount = 0
+
+    try {
+      for (const instance of projectStore.wiremockInstances) {
+        if (!instance.isActive) continue
+        try {
+          await wiremockInstanceApi.reset(instance.id)
+          successCount++
+        } catch {
+          failCount++
+        }
+      }
+
+      if (failCount === 0) {
+        ElMessage.success('すべてのマッピングをリセットしました')
+      } else {
+        ElMessage.warning(`成功: ${successCount}件, 失敗: ${failCount}件`)
+      }
+      return failCount === 0
+    } catch (e: any) {
+      error.value = e.message || 'マッピングのリセットに失敗しました'
+      ElMessage.error(error.value)
+      return false
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     stubs,
     mappings,
@@ -167,6 +215,7 @@ export const useMappingStore = defineStore('mapping', () => {
     syncToWiremock,
     syncAllToWiremock,
     clearMappings,
-    getStubById
+    getStubById,
+    resetMappings
   }
 })

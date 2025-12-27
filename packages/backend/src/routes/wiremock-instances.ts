@@ -338,7 +338,8 @@ export async function wiremockInstanceRoutes(fastify: FastifyInstance) {
     }
 
     try {
-      await axios.post(`${instance.url}/__admin/reset`, {}, {
+      // Delete all mappings from WireMock
+      await axios.delete(`${instance.url}/__admin/mappings`, {
         timeout: 10000
       })
 

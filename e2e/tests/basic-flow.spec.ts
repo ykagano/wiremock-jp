@@ -8,6 +8,13 @@ const WIREMOCK_2_URL = 'http://wiremock-2:8080'
 // SKIP_CLEANUP=true でクリーンアップをスキップ（デバッグ・確認用）
 const SKIP_CLEANUP = process.env.SKIP_CLEANUP === 'true'
 
+// URLからプロジェクトIDを取得するヘルパー関数
+async function getProjectIdFromUrl(page: any): Promise<string> {
+  const url = page.url()
+  const match = url.match(/\/projects\/([^/]+)/)
+  return match ? match[1] : ''
+}
+
 // クリーンアップ用ヘルパー関数
 async function cleanupProject(page: any, projectName: string) {
   if (SKIP_CLEANUP) {
@@ -444,5 +451,95 @@ test.describe('WireMock Hub E2E Tests - UI', () => {
 
     // Clean up
     await cleanupProject(page, errorTestProject)
+  })
+
+  test('should reset stubs on WireMock instance', async ({ page, request }) => {
+    const testProjectName = `Reset Stubs Test ${Date.now()}`
+
+    // Create project
+    await page.locator('.page-header').getByRole('button', { name: /プロジェクト追加|Add Project/ }).click()
+    await page.getByLabel(/プロジェクト名|Name/).fill(testProjectName)
+    await page.getByLabel(/WireMock URL|Base URL/).fill(WIREMOCK_2_URL)
+    await page.locator('.el-dialog').getByRole('button', { name: /保存|Save/ }).click()
+
+    // Go to project detail
+    const projectCard = page.locator('.el-card', { hasText: testProjectName })
+    await projectCard.getByRole('button', { name: /詳細|Detail/ }).click()
+
+    // Add instance (use wiremock-2 to avoid affecting other tests)
+    await page.locator('.tab-header').getByRole('button', { name: /インスタンス追加|Add Instance/ }).click()
+    await page.locator('.el-dialog').getByLabel(/インスタンス名|Name/).fill('Reset Test Instance')
+    await page.locator('.el-dialog').getByLabel(/URL/).fill(WIREMOCK_2_URL)
+    await page.locator('.el-dialog').getByRole('button', { name: /保存|Save/ }).click()
+    await page.waitForTimeout(1000)
+
+    // Navigate to stubs tab and create a stub
+    await page.getByRole('tab', { name: /スタブ|Stubs/ }).click()
+    await page.waitForTimeout(500)
+
+    await page.getByRole('button', { name: /新規作成|マッピング追加|Add/ }).first().click()
+
+    // Fill in stub
+    const urlInput = page.getByPlaceholder('/api/users')
+    await expect(urlInput).toBeVisible()
+    await urlInput.fill('/api/reset-test')
+
+    // Go to response tab and fill in response body
+    await page.getByRole('tab', { name: /レスポンス|Response/ }).click()
+    const responseTextarea = page.getByPlaceholder('{"message": "success"}')
+    await expect(responseTextarea).toBeVisible()
+    await responseTextarea.fill('{"message": "Before reset"}')
+
+    // Save the stub
+    await page.getByRole('button', { name: /保存|Save/ }).click()
+    await expect(page.getByText(/保存|成功|success|スタブ/i).first()).toBeVisible({ timeout: 5000 })
+
+    // Navigate back to project detail and sync
+    await page.locator('.el-aside').getByText(/プロジェクト|Projects/).click()
+    await page.waitForTimeout(500)
+
+    const projectCardForSync = page.locator('.el-card', { hasText: testProjectName })
+    await projectCardForSync.getByRole('button', { name: /詳細|Detail/ }).click()
+
+    // Click on instances tab
+    await page.getByRole('tab', { name: /インスタンス|Instances/ }).click()
+
+    // Sync all instances
+    await page.getByRole('button', { name: /全インスタンスに同期|Sync All/ }).click()
+    await expect(page.getByText(/同期完了|Sync|成功/i).first()).toBeVisible({ timeout: 15000 })
+    await page.waitForTimeout(1000)
+
+    // Verify stub is accessible on WireMock (use localhost:8082 for wiremock-2)
+    const responseBeforeReset = await request.get('http://localhost:8082/api/reset-test')
+    expect(responseBeforeReset.status()).toBe(200)
+    const bodyBeforeReset = await responseBeforeReset.json()
+    expect(bodyBeforeReset.message).toBe('Before reset')
+
+    // Navigate to Mappings view via sidebar to use the reset function
+    await page.locator('.el-aside').getByText(/スタブマッピング|マッピング|Mappings/).click()
+    await page.waitForTimeout(1000)
+
+    // Click refresh to load mappings
+    await page.getByRole('button', { name: /更新|Refresh/ }).click()
+    await page.waitForTimeout(500)
+
+    // Verify the stub appears in the mapping list before reset
+    await expect(page.locator('code', { hasText: '/api/reset-test' }).first()).toBeVisible({ timeout: 5000 })
+
+    // Click reset all button
+    await page.getByRole('button', { name: /すべてリセット|Reset All/ }).click()
+    await page.locator('.el-message-box').getByRole('button', { name: /はい|Yes|確認/ }).click()
+
+    // Wait for reset to complete
+    await expect(page.getByText(/成功|success|リセット/i).first()).toBeVisible({ timeout: 10000 })
+    await page.waitForTimeout(1000)
+
+    // Verify stub is no longer accessible on WireMock (should return 404 or similar)
+    const responseAfterReset = await request.get('http://localhost:8082/api/reset-test')
+    // After reset, WireMock returns 404 for non-existent mappings
+    expect(responseAfterReset.status()).toBe(404)
+
+    // Clean up
+    await cleanupProject(page, testProjectName)
   })
 })
