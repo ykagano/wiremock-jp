@@ -19,28 +19,11 @@ Only **port 80** is exposed externally.
 | `/__admin/*` | WireMock (8080) | Admin API |
 | `/` (others) | WireMock (8080) | Mock Responses |
 
-## Build Instructions
+## Quick Start
 
 ```bash
-# Run from repository root
-
-# Build frontend with /hub base path
-VITE_BASE_PATH=/hub/ pnpm run build:frontend
-
-# Build Docker image
-docker build -f allinone/Dockerfile -t wiremock-hub-allinone .
-```
-
-## Running the Container
-
-### Local Environment
-
-```bash
-docker run -d \
-  -p 80:80 \
-  -v $(pwd)/data:/app/packages/backend/data \
-  --name wiremock-hub-allinone \
-  wiremock-hub-allinone
+cd allinone
+docker compose up -d
 ```
 
 Access URLs:
@@ -101,18 +84,8 @@ Access URLs:
 
 SQLite database is stored at `/app/packages/backend/data/wiremock-hub.db`.
 
-### Local Environment
-
-```bash
-docker run -d \
-  -p 80:80 \
-  -v ./data:/app/packages/backend/data \
-  wiremock-hub-allinone
-```
-
-### ECS/Fargate
-
-Mount an EFS volume (see task definition example above).
+Docker Compose uses the volume mount defined in `docker-compose.yml`.
+For ECS/Fargate, mount an EFS volume (see task definition example above).
 
 ## Environment Variables
 

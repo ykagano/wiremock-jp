@@ -1,0 +1,20 @@
+# All-in-One Docker Compose
+# Hub + WireMock + nginx in a single container
+# Usage: cd allinone && docker compose up -d
+#
+# Access URLs:
+#   - Hub UI: http://localhost/hub/
+#   - WireMock Admin API: http://localhost/__admin/
+#   - Mock responses: http://localhost/
+
+services:
+  wiremock-hub-allinone:
+    build:
+      context: ..
+      dockerfile: allinone/Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ../packages/backend/data:/app/packages/backend/data
+    environment:
+      - DATABASE_URL=file:./data/wiremock-hub.db

@@ -149,8 +149,8 @@ docker run -d \
 ### Docker Compose
 
 ```bash
-# All-in-One版
-docker compose -f docker-compose.allinone.yml up -d
+# All-in-One版（ローカルビルド）
+cd allinone && docker compose up -d
 
 # Standalone版 + デモ用WireMock
 docker compose -f docker-compose.yml -f docker-compose.demo.yml up -d
